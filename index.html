@@ -1,0 +1,2138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUSBET — Esports Betting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-void: #030508;
+    --bg-deep: #070c12;
+    --bg-card: #0b1420;
+    --bg-hover: #101e30;
+    --accent-cyan: #00f5ff;
+    --accent-orange: #ff6b1a;
+    --accent-green: #00ff88;
+    --accent-red: #ff2d55;
+    --accent-purple: #b026ff;
+    --text-primary: #e8f4ff;
+    --text-secondary: #7a9ab8;
+    --text-dim: #3d5a70;
+    --border-glow: rgba(0, 245, 255, 0.15);
+    --border-subtle: rgba(0, 245, 255, 0.06);
+    --shadow-cyan: 0 0 30px rgba(0, 245, 255, 0.12);
+    --shadow-orange: 0 0 30px rgba(255, 107, 26, 0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--bg-void);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ── SCANLINES OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.018;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(3, 5, 8, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-glow);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    color: var(--text-primary);
+    text-decoration: none;
+    position: relative;
+  }
+
+  .nav-logo span {
+    color: var(--accent-cyan);
+    text-shadow: 0 0 20px var(--accent-cyan), 0 0 40px rgba(0,245,255,0.4);
+  }
+
+  .nav-logo::after {
+    content: 'BETA';
+    position: absolute;
+    top: -8px;
+    right: -36px;
+    font-size: 0.5rem;
+    font-weight: 700;
+    color: var(--accent-orange);
+    background: rgba(255,107,26,0.15);
+    border: 1px solid rgba(255,107,26,0.4);
+    padding: 2px 5px;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 8px var(--accent-cyan);
+    transition: width 0.3s ease;
+  }
+
+  .nav-links a:hover { color: var(--accent-cyan); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-links a.active { color: var(--accent-cyan); }
+  .nav-links a.active::after { width: 100%; }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .btn-ghost {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    background: transparent;
+    border: 1px solid var(--border-glow);
+    padding: 0.5rem 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-ghost:hover {
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 16px rgba(0,245,255,0.15);
+  }
+
+  .btn-primary {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bg-void);
+    background: var(--accent-cyan);
+    border: none;
+    padding: 0.55rem 1.4rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 0 24px rgba(0,245,255,0.5);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:hover::before { opacity: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    padding-top: 64px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 60% 40%, rgba(0,245,255,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 50% at 20% 80%, rgba(176,38,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 20%, rgba(255,107,26,0.04) 0%, transparent 60%),
+      linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-void) 100%);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,245,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    width: 100%;
+  }
+
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-cyan);
+    opacity: 0.8;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .hero-label::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 8px var(--accent-cyan);
+  }
+
+  .hero-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2.5rem, 5vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: 0.03em;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-title .highlight {
+    color: var(--accent-cyan);
+    text-shadow: 0 0 30px rgba(0,245,255,0.5), 0 0 60px rgba(0,245,255,0.2);
+    display: block;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+    max-width: 480px;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 3.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .hero-stat-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .hero-stat-value span { color: var(--accent-cyan); }
+
+  .hero-stat-label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  /* ── LIVE MATCHES PANEL ── */
+  .hero-matches {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .matches-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .matches-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--accent-red);
+    font-weight: 500;
+  }
+
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-red);
+    box-shadow: 0 0 8px var(--accent-red);
+    animation: pulse-red 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-red {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .match-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    padding: 1rem 1.2rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.5s ease both;
+  }
+
+  .match-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent-cyan);
+    transform: scaleY(0);
+    transition: transform 0.25s ease;
+    box-shadow: 0 0 12px var(--accent-cyan);
+  }
+
+  .match-card:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-glow);
+    box-shadow: var(--shadow-cyan);
+    transform: translateX(4px);
+  }
+
+  .match-card:hover::before { transform: scaleY(1); }
+
+  .match-card:nth-child(2) { animation-delay: 0.1s; }
+  .match-card:nth-child(3) { animation-delay: 0.2s; }
+  .match-card:nth-child(4) { animation-delay: 0.3s; }
+  .match-card:nth-child(5) { animation-delay: 0.4s; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .match-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .game-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+
+  .tag-csgo { background: rgba(255,107,26,0.15); color: var(--accent-orange); border: 1px solid rgba(255,107,26,0.25); }
+  .tag-lol { background: rgba(0,245,255,0.1); color: var(--accent-cyan); border: 1px solid rgba(0,245,255,0.2); }
+  .tag-dota { background: rgba(176,38,255,0.12); color: var(--accent-purple); border: 1px solid rgba(176,38,255,0.25); }
+  .tag-val { background: rgba(255,45,85,0.12); color: var(--accent-red); border: 1px solid rgba(255,45,85,0.25); }
+  .tag-ow { background: rgba(0,255,136,0.1); color: var(--accent-green); border: 1px solid rgba(0,255,136,0.2); }
+
+  .match-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    margin-left: auto;
+  }
+
+  .match-time.live { color: var(--accent-red); font-weight: 500; }
+
+  .match-teams {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .team-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text-primary);
+    flex: 1;
+  }
+
+  .team-name.right { text-align: right; }
+
+  .vs-divider {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    padding: 0 0.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .match-odds {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.8rem;
+  }
+
+  .odd-btn {
+    flex: 1;
+    background: rgba(0,245,255,0.04);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.4rem 0;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+  }
+
+  .odd-btn span:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--text-dim);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+
+  .odd-btn span:last-child {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+  }
+
+  .odd-btn:hover {
+    background: rgba(0,245,255,0.1);
+    border-color: rgba(0,245,255,0.3);
+    box-shadow: 0 0 12px rgba(0,245,255,0.1);
+  }
+
+  .odd-btn.draw span:last-child { color: var(--text-secondary); }
+
+  /* ── SECTION LAYOUT ── */
+  .section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+  }
+
+  .section-title span { color: var(--accent-cyan); }
+
+  .section-sub {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 0.3rem;
+  }
+
+  .view-all {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent-cyan);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: gap 0.2s;
+  }
+
+  .view-all:hover { gap: 0.8rem; }
+  .view-all::after { content: '→'; }
+
+  /* ── GAME FILTERS ── */
+  .game-filters {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    color: var(--accent-cyan);
+    border-color: rgba(0,245,255,0.3);
+    background: rgba(0,245,255,0.05);
+  }
+
+  /* ── FEATURED MATCHES GRID ── */
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .featured-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .featured-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,245,255,0.03) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .featured-card:hover {
+    border-color: var(--border-glow);
+    box-shadow: var(--shadow-cyan);
+    transform: translateY(-4px);
+  }
+
+  .featured-card:hover::after { opacity: 1; }
+
+  .card-banner {
+    height: 5px;
+    background: linear-gradient(90deg, var(--accent-cyan), transparent);
+  }
+
+  .card-banner.orange { background: linear-gradient(90deg, var(--accent-orange), transparent); }
+  .card-banner.purple { background: linear-gradient(90deg, var(--accent-purple), transparent); }
+  .card-banner.red { background: linear-gradient(90deg, var(--accent-red), transparent); }
+  .card-banner.green { background: linear-gradient(90deg, var(--accent-green), transparent); }
+
+  .card-body { padding: 1.4rem; }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
+  }
+
+  .tournament-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .card-teams {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .card-team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .card-team.right { align-items: flex-end; text-align: right; }
+  .card-team.left { align-items: flex-start; text-align: left; }
+
+  .team-logo {
+    width: 42px;
+    height: 42px;
+    background: var(--bg-hover);
+    border: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .card-team-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+  }
+
+  .card-vs {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .card-score {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.1em;
+  }
+
+  .card-odds-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .card-odd {
+    background: rgba(0,245,255,0.04);
+    border: 1px solid var(--border-subtle);
+    padding: 0.6rem 0.4rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-odd::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent-cyan);
+    transform: scaleX(0);
+    transition: transform 0.2s;
+    box-shadow: 0 0 8px var(--accent-cyan);
+  }
+
+  .card-odd:hover {
+    background: rgba(0,245,255,0.1);
+    border-color: rgba(0,245,255,0.25);
+  }
+
+  .card-odd:hover::before { transform: scaleX(1); }
+
+  .odd-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .odd-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+  }
+
+  /* ── BET SLIP ── */
+  .betslip-wrapper {
+    position: fixed;
+    right: 0;
+    top: 64px;
+    bottom: 0;
+    width: 300px;
+    z-index: 100;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .betslip-wrapper.open { transform: translateX(0); }
+
+  .betslip {
+    height: 100%;
+    background: var(--bg-deep);
+    border-left: 1px solid var(--border-glow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .betslip-header {
+    padding: 1.2rem 1.4rem;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0,245,255,0.03);
+  }
+
+  .betslip-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent-cyan);
+  }
+
+  .betslip-count {
+    width: 22px;
+    height: 22px;
+    background: var(--accent-cyan);
+    color: var(--bg-void);
+    border-radius: 50%;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .betslip-close {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .betslip-close:hover { color: var(--text-primary); }
+
+  .betslip-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-glow) transparent;
+  }
+
+  .betslip-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    padding: 1rem;
+    margin-bottom: 0.7rem;
+    position: relative;
+  }
+
+  .betslip-item-game {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.3rem;
+  }
+
+  .betslip-item-pick {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.2rem;
+  }
+
+  .betslip-item-odd {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.72rem;
+    color: var(--accent-cyan);
+    font-weight: 600;
+  }
+
+  .betslip-remove {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.7rem;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+
+  .betslip-remove:hover { color: var(--accent-red); }
+
+  .betslip-footer {
+    padding: 1.2rem 1.4rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .betslip-stake {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-family: 'Orbitron', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.8rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .betslip-stake:focus { border-color: var(--accent-cyan); }
+  .betslip-stake::placeholder { color: var(--text-dim); }
+
+  .betslip-potential {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.8rem;
+    background: rgba(0,255,136,0.04);
+    border: 1px solid rgba(0,255,136,0.1);
+  }
+
+  .betslip-potential-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+  }
+
+  .betslip-potential-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent-green);
+    text-shadow: 0 0 16px rgba(0,255,136,0.4);
+  }
+
+  .btn-place-bet {
+    width: 100%;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bg-void);
+    background: linear-gradient(135deg, var(--accent-green), #00cc6a);
+    border: none;
+    padding: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 20px rgba(0,255,136,0.2);
+  }
+
+  .btn-place-bet:hover {
+    box-shadow: 0 0 32px rgba(0,255,136,0.4);
+    transform: translateY(-1px);
+  }
+
+  /* ── BET SLIP TOGGLE ── */
+  .betslip-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 200;
+    background: var(--accent-cyan);
+    color: var(--bg-void);
+    border: none;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    box-shadow: 0 0 24px rgba(0,245,255,0.4);
+    transition: all 0.2s;
+    flex-direction: column;
+    gap: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .betslip-toggle:hover {
+    box-shadow: 0 0 40px rgba(0,245,255,0.6);
+    transform: scale(1.05);
+  }
+
+  .betslip-toggle-icon { font-size: 1.2rem; line-height: 1; }
+
+  .betslip-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    background: var(--accent-red);
+    color: white;
+    border-radius: 50%;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px rgba(255,45,85,0.5);
+    animation: pulse-red 2s ease infinite;
+  }
+
+  /* ── PROMO BANNER ── */
+  .promo-strip {
+    background: linear-gradient(135deg, rgba(0,245,255,0.08) 0%, rgba(176,38,255,0.08) 100%);
+    border-top: 1px solid rgba(0,245,255,0.08);
+    border-bottom: 1px solid rgba(0,245,255,0.08);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .promo-ticker {
+    display: flex;
+    gap: 4rem;
+    padding: 0.9rem 0;
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+    width: max-content;
+  }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .promo-item {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex-shrink: 0;
+  }
+
+  .promo-item strong { color: var(--accent-cyan); font-weight: 500; }
+  .promo-dot { width: 3px; height: 3px; background: var(--text-dim); border-radius: 50%; }
+
+  /* ── PROMOTIONS ── */
+  .promos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .promo-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    overflow: hidden;
+    transition: all 0.3s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .promo-card:hover {
+    border-color: var(--border-glow);
+    box-shadow: var(--shadow-cyan);
+    transform: translateY(-3px);
+  }
+
+  .promo-img {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .promo-img-1 { background: linear-gradient(135deg, #0a1a2e, #001a4d); }
+  .promo-img-2 { background: linear-gradient(135deg, #1a0a0a, #4d0000); }
+  .promo-img-3 { background: linear-gradient(135deg, #0a0a1a, #1a004d); }
+
+  .promo-img-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    opacity: 0.15;
+    user-select: none;
+  }
+
+  .promo-img-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--accent-cyan);
+    color: var(--bg-void);
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+  }
+
+  .promo-content { padding: 1.2rem; }
+
+  .promo-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.4rem;
+  }
+
+  .promo-desc {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .promo-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--accent-cyan);
+    text-shadow: 0 0 20px rgba(0,245,255,0.3);
+    margin-bottom: 0.8rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--bg-deep);
+    border-top: 1px solid var(--border-subtle);
+    padding: 3rem 2rem 2rem;
+  }
+
+  .footer-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .footer-brand p {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-top: 0.8rem;
+    max-width: 300px;
+  }
+
+  .footer-col h4 {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+  }
+
+  .footer-col ul { list-style: none; }
+
+  .footer-col li {
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-col a {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-col a:hover { color: var(--accent-cyan); }
+
+  .footer-bottom {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-legal {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    line-height: 1.6;
+    max-width: 600px;
+  }
+
+  .age-badge {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    border: 2px solid var(--text-dim);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ── TOURNAMENTS ── */
+  .tournaments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .tournament-row {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    padding: 1rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .tournament-row:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-glow);
+    padding-left: 1.8rem;
+  }
+
+  .tournament-rank {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    width: 24px;
+    flex-shrink: 0;
+  }
+
+  .tournament-info { flex: 1; }
+
+  .tournament-row-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .tournament-row-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  .tournament-prize {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-green);
+  }
+
+  .tournament-matches {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    text-align: right;
+  }
+
+  /* ── NOTIFICATION TOAST ── */
+  .toast-container {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    pointer-events: none;
+  }
+
+  .toast {
+    background: var(--bg-card);
+    border: 1px solid var(--accent-cyan);
+    box-shadow: 0 0 20px rgba(0,245,255,0.2);
+    padding: 0.7rem 1.2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--text-primary);
+    white-space: nowrap;
+    animation: toastIn 0.3s ease both, toastOut 0.3s ease 2.5s both;
+    pointer-events: none;
+  }
+
+  .toast .toast-accent { color: var(--accent-cyan); font-weight: 500; }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(-10px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes toastOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-10px); }
+  }
+
+  /* ── PAGE SECTIONS BG DIVIDERS ── */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .hero-content { grid-template-columns: 1fr; }
+    .hero-matches { display: none; }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+    .betslip-wrapper { width: 280px; }
+  }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .featured-grid { grid-template-columns: 1fr; }
+    .footer-inner { grid-template-columns: 1fr; }
+  }
+
+  /* ── SCROLL FADE-IN ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-glow); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ── TOAST CONTAINER ── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#" class="nav-logo">NEXUS<span>BET</span></a>
+  <ul class="nav-links">
+    <li><a href="#" class="active">Live</a></li>
+    <li><a href="#matches">Matches</a></li>
+    <li><a href="#tournaments">Tournaments</a></li>
+    <li><a href="#promos">Promotions</a></li>
+    <li><a href="#">Stats</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="#" class="btn-ghost" onclick="showToast('Login feature coming soon!')">Login</a>
+    <a href="#" class="btn-primary" onclick="showToast('Registration coming soon! 🎮')">Register</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-label">The Future of Esports Betting</div>
+      <h1 class="hero-title">
+        DOMINATE<br>THE
+        <span class="highlight">META.</span>
+      </h1>
+      <p class="hero-subtitle">Real-time odds on CS2, League of Legends, Dota 2, Valorant, and more. Competitive lines, instant payouts, and live in-play betting on every major tournament.</p>
+      <div class="hero-cta">
+        <a href="#" class="btn-primary" onclick="showToast('Welcome to NEXUSBET! 🚀')">Start Betting</a>
+        <a href="#matches" class="btn-ghost">View All Matches</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-value">240<span>+</span></div>
+          <div class="hero-stat-label">Live Markets</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">$<span>2.4M</span></div>
+          <div class="hero-stat-label">Paid Out Today</div>
+        </div>
+        <div>
+          <div class="hero-stat-value">98<span>k</span></div>
+          <div class="hero-stat-label">Active Users</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-matches">
+      <div class="matches-header">
+        <span class="matches-title">Featured Right Now</span>
+        <span class="live-badge"><span class="live-dot"></span>12 LIVE</span>
+      </div>
+
+      <div class="match-card" onclick="addToBetSlip('NAVI', 'CS2', '1.85')">
+        <div class="match-meta">
+          <span class="game-tag tag-csgo">CS2</span>
+          <span class="match-time live">● LIVE — Map 2</span>
+        </div>
+        <div class="match-teams">
+          <span class="team-name">NAVI</span>
+          <span class="vs-divider">10:8</span>
+          <span class="team-name right">VITALITY</span>
+        </div>
+        <div class="match-odds">
+          <button class="odd-btn" onclick="event.stopPropagation(); addToBetSlip('NAVI', 'CS2', '1.85')">
+            <span>NAVI</span><span>1.85</span>
+          </button>
+          <button class="odd-btn" onclick="event.stopPropagation(); addToBetSlip('VITALITY', 'CS2', '2.10')">
+            <span>VIT</span><span>2.10</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="match-card" onclick="addToBetSlip('T1', 'LOL', '1.62')">
+        <div class="match-meta">
+          <span class="game-tag tag-lol">LOL</span>
+          <span class="match-time live">● LIVE — Game 3</span>
+        </div>
+        <div class="match-teams">
+          <span class="team-name">T1</span>
+          <span class="vs-divider">1:1</span>
+          <span class="team-name right">GEN.G</span>
+        </div>
+        <div class="match-odds">
+          <button class="odd-btn" onclick="event.stopPropagation(); addToBetSlip('T1', 'LOL', '1.62')">
+            <span>T1</span><span>1.62</span>
+          </button>
+          <button class="odd-btn" onclick="event.stopPropagation(); addToBetSlip('GEN.G', 'LOL', '2.40')">
+            <span>GEN</span><span>2.40</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="match-card" onclick="addToBetSlip('LIQUID', 'VAL', '2.05')">
+        <div class="match-meta">
+          <span class="game-tag tag-val">VALORANT</span>
+          <span class="match-time">Starting in 23m</span>
+        </div>
+        <div class="match-teams">
+          <span class="team-name">LIQUID</span>
+          <span class="vs-divider">VS</span>
+          <span class="team-name right">FNATIC</span>
+        </div>
+        <div class="match-odds">
+          <button class="odd-btn" onclick="event.stopPropagation(); addToBetSlip('LIQUID', 'VAL', '2.05')">
+            <span>LIQ</span><span>2.05</span>
+          </button>
+          <button class="odd-btn" onclick="event.stopPropagation(); addToBetSlip('FNATIC', 'VAL', '1.78')">
+            <span>FNC</span><span>1.78</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="match-card" onclick="addToBetSlip('SPIRIT', 'DOTA2', '1.55')">
+        <div class="match-meta">
+          <span class="game-tag tag-dota">DOTA 2</span>
+          <span class="match-time">Starting in 1h 10m</span>
+        </div>
+        <div class="match-teams">
+          <span class="team-name">SPIRIT</span>
+          <span class="vs-divider">VS</span>
+          <span class="team-name right">EG</span>
+        </div>
+        <div class="match-odds">
+          <button class="odd-btn" onclick="event.stopPropagation(); addToBetSlip('SPIRIT', 'DOTA2', '1.55')">
+            <span>SPR</span><span>1.55</span>
+          </button>
+          <button class="odd-btn" onclick="event.stopPropagation(); addToBetSlip('EG', 'DOTA2', '2.60')">
+            <span>EG</span><span>2.60</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROMO TICKER ── -->
+<div class="promo-strip">
+  <div class="promo-ticker" id="ticker">
+    <span class="promo-item"><strong>BLAST Premier World Final</strong><span class="promo-dot"></span>CS2 — 240+ markets open</span>
+    <span class="promo-item"><strong>Worlds 2026</strong><span class="promo-dot"></span>LOL — Quarter Finals LIVE</span>
+    <span class="promo-item"><strong>WELCOME BONUS</strong><span class="promo-dot"></span>100% up to $500 on first deposit</span>
+    <span class="promo-item"><strong>The International 2026</strong><span class="promo-dot"></span>Dota 2 — Prize Pool $18M+</span>
+    <span class="promo-item"><strong>VCT Champions</strong><span class="promo-dot"></span>Valorant — Group Stage starts Friday</span>
+    <span class="promo-item"><strong>CASH OUT</strong><span class="promo-dot"></span>Cash out any bet at any time</span>
+    <!-- repeated for seamless loop -->
+    <span class="promo-item"><strong>BLAST Premier World Final</strong><span class="promo-dot"></span>CS2 — 240+ markets open</span>
+    <span class="promo-item"><strong>Worlds 2026</strong><span class="promo-dot"></span>LOL — Quarter Finals LIVE</span>
+    <span class="promo-item"><strong>WELCOME BONUS</strong><span class="promo-dot"></span>100% up to $500 on first deposit</span>
+    <span class="promo-item"><strong>The International 2026</strong><span class="promo-dot"></span>Dota 2 — Prize Pool $18M+</span>
+    <span class="promo-item"><strong>VCT Champions</strong><span class="promo-dot"></span>Valorant — Group Stage starts Friday</span>
+    <span class="promo-item"><strong>CASH OUT</strong><span class="promo-dot"></span>Cash out any bet at any time</span>
+  </div>
+</div>
+
+<!-- ── FEATURED MATCHES ── -->
+<div id="matches">
+<div class="section-divider"></div>
+<div class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Featured <span>Matches</span></div>
+      <div class="section-sub">Top picks across all titles</div>
+    </div>
+    <a href="#" class="view-all">All Matches</a>
+  </div>
+
+  <div class="game-filters">
+    <button class="filter-btn active" onclick="setFilter(this, 'all')">All</button>
+    <button class="filter-btn" onclick="setFilter(this, 'cs2')">CS2</button>
+    <button class="filter-btn" onclick="setFilter(this, 'lol')">League of Legends</button>
+    <button class="filter-btn" onclick="setFilter(this, 'dota')">Dota 2</button>
+    <button class="filter-btn" onclick="setFilter(this, 'val')">Valorant</button>
+    <button class="filter-btn" onclick="setFilter(this, 'ow')">Overwatch</button>
+    <button class="filter-btn" onclick="setFilter(this, 'rl')">Rocket League</button>
+  </div>
+
+  <div class="featured-grid" id="featuredGrid">
+
+    <div class="featured-card fade-in">
+      <div class="card-banner"></div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="game-tag tag-csgo">CS2</span>
+          <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+        </div>
+        <div class="tournament-name">BLAST Premier World Final 2026</div>
+        <div class="card-teams">
+          <div class="card-team left">
+            <div class="team-logo">NV</div>
+            <div class="card-team-name">NAVI</div>
+          </div>
+          <div class="card-vs">
+            <div class="card-score">10:8</div>
+            <div>MAP 2</div>
+          </div>
+          <div class="card-team right">
+            <div class="team-logo">VIT</div>
+            <div class="card-team-name">VITALITY</div>
+          </div>
+        </div>
+        <div class="card-odds-row">
+          <div class="card-odd" onclick="addToBetSlip('NAVI', 'CS2 BLAST Premier', '1.85')">
+            <span class="odd-label">NAVI Win</span>
+            <span class="odd-value">1.85</span>
+          </div>
+          <div class="card-odd" onclick="addToBetSlip('Over 26.5', 'CS2 BLAST Premier', '1.92')">
+            <span class="odd-label">Over 26.5</span>
+            <span class="odd-value">1.92</span>
+          </div>
+          <div class="card-odd" onclick="addToBetSlip('VITALITY', 'CS2 BLAST Premier', '2.10')">
+            <span class="odd-label">VIT Win</span>
+            <span class="odd-value">2.10</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="featured-card fade-in">
+      <div class="card-banner orange"></div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="game-tag tag-lol">LOL</span>
+          <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+        </div>
+        <div class="tournament-name">LoL Worlds 2026 — Quarterfinals</div>
+        <div class="card-teams">
+          <div class="card-team left">
+            <div class="team-logo">T1</div>
+            <div class="card-team-name">T1</div>
+          </div>
+          <div class="card-vs">
+            <div class="card-score">1:1</div>
+            <div>GAME 3</div>
+          </div>
+          <div class="card-team right">
+            <div class="team-logo">GG</div>
+            <div class="card-team-name">GEN.G</div>
+          </div>
+        </div>
+        <div class="card-odds-row">
+          <div class="card-odd" onclick="addToBetSlip('T1 Win', 'LOL Worlds', '1.62')">
+            <span class="odd-label">T1 Win</span>
+            <span class="odd-value">1.62</span>
+          </div>
+          <div class="card-odd" onclick="addToBetSlip('T1 2-1', 'LOL Worlds', '2.15')">
+            <span class="odd-label">T1 2-1</span>
+            <span class="odd-value">2.15</span>
+          </div>
+          <div class="card-odd" onclick="addToBetSlip('GEN.G Win', 'LOL Worlds', '2.40')">
+            <span class="odd-label">GEN.G Win</span>
+            <span class="odd-value">2.40</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="featured-card fade-in">
+      <div class="card-banner purple"></div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="game-tag tag-dota">DOTA 2</span>
+          <span style="font-family: 'JetBrains Mono'; font-size: 0.62rem; color: var(--text-dim); letter-spacing: 0.06em;">Starting 21:00</span>
+        </div>
+        <div class="tournament-name">The International 2026 — Group Stage</div>
+        <div class="card-teams">
+          <div class="card-team left">
+            <div class="team-logo">SPR</div>
+            <div class="card-team-name">SPIRIT</div>
+          </div>
+          <div class="card-vs">
+            <div style="font-size: 1rem; color: var(--text-dim);">vs</div>
+            <div>BO3</div>
+          </div>
+          <div class="card-team right">
+            <div class="team-logo">EG</div>
+            <div class="card-team-name">EG</div>
+          </div>
+        </div>
+        <div class="card-odds-row">
+          <div class="card-odd" onclick="addToBetSlip('Spirit Win', 'Dota 2 TI', '1.55')">
+            <span class="odd-label">Spirit</span>
+            <span class="odd-value">1.55</span>
+          </div>
+          <div class="card-odd" onclick="addToBetSlip('2-0 Spirit', 'Dota 2 TI', '2.30')">
+            <span class="odd-label">2-0 Spirit</span>
+            <span class="odd-value">2.30</span>
+          </div>
+          <div class="card-odd" onclick="addToBetSlip('EG Win', 'Dota 2 TI', '2.60')">
+            <span class="odd-label">EG</span>
+            <span class="odd-value">2.60</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="featured-card fade-in">
+      <div class="card-banner red"></div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="game-tag tag-val">VALORANT</span>
+          <span style="font-family: 'JetBrains Mono'; font-size: 0.62rem; color: var(--text-dim); letter-spacing: 0.06em;">Starting 18:30</span>
+        </div>
+        <div class="tournament-name">VCT Champions 2026 — Group A</div>
+        <div class="card-teams">
+          <div class="card-team left">
+            <div class="team-logo">LIQ</div>
+            <div class="card-team-name">LIQUID</div>
+          </div>
+          <div class="card-vs">
+            <div style="font-size: 1rem; color: var(--text-dim);">vs</div>
+            <div>BO3</div>
+          </div>
+          <div class="card-team right">
+            <div class="team-logo">FNC</div>
+            <div class="card-team-name">FNATIC</div>
+          </div>
+        </div>
+        <div class="card-odds-row">
+          <div class="card-odd" onclick="addToBetSlip('Liquid Win', 'VCT Champions', '2.05')">
+            <span class="odd-label">Liquid</span>
+            <span class="odd-value">2.05</span>
+          </div>
+          <div class="card-odd" onclick="addToBetSlip('2-1 Either', 'VCT Champions', '1.68')">
+            <span class="odd-label">Goes to 3</span>
+            <span class="odd-value">1.68</span>
+          </div>
+          <div class="card-odd" onclick="addToBetSlip('Fnatic Win', 'VCT Champions', '1.78')">
+            <span class="odd-label">Fnatic</span>
+            <span class="odd-value">1.78</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="featured-card fade-in">
+      <div class="card-banner green"></div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="game-tag tag-ow">OVERWATCH 2</span>
+          <span style="font-family: 'JetBrains Mono'; font-size: 0.62rem; color: var(--text-dim); letter-spacing: 0.06em;">Starting 20:00</span>
+        </div>
+        <div class="tournament-name">Overwatch League 2026 Finals</div>
+        <div class="card-teams">
+          <div class="card-team left">
+            <div class="team-logo">SEO</div>
+            <div class="card-team-name">SEOUL</div>
+          </div>
+          <div class="card-vs">
+            <div style="font-size: 1rem; color: var(--text-dim);">vs</div>
+            <div>BO5</div>
+          </div>
+          <div class="card-team right">
+            <div class="team-logo">ATL</div>
+            <div class="card-team-name">ATLANTA</div>
+          </div>
+        </div>
+        <div class="card-odds-row">
+          <div class="card-odd" onclick="addToBetSlip('Seoul Dynasty', 'OWL Finals', '1.90')">
+            <span class="odd-label">Seoul</span>
+            <span class="odd-value">1.90</span>
+          </div>
+          <div class="card-odd" onclick="addToBetSlip('Over 3.5 Maps', 'OWL Finals', '2.20')">
+            <span class="odd-label">Ov 3.5 Maps</span>
+            <span class="odd-value">2.20</span>
+          </div>
+          <div class="card-odd" onclick="addToBetSlip('Atlanta Reign', 'OWL Finals', '1.95')">
+            <span class="odd-label">Atlanta</span>
+            <span class="odd-value">1.95</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="featured-card fade-in">
+      <div class="card-banner" style="background: linear-gradient(90deg, #ff6b1a, transparent);"></div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="game-tag" style="background: rgba(255,107,26,0.1); color: #ff9a5a; border: 1px solid rgba(255,107,26,0.2); font-family: 'JetBrains Mono'; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px;">ROCKET LEAGUE</span>
+          <span style="font-family: 'JetBrains Mono'; font-size: 0.62rem; color: var(--text-dim); letter-spacing: 0.06em;">Tomorrow 16:00</span>
+        </div>
+        <div class="tournament-name">RLCS 2026 World Championship</div>
+        <div class="card-teams">
+          <div class="card-team left">
+            <div class="team-logo">G2</div>
+            <div class="card-team-name">G2 ESPORTS</div>
+          </div>
+          <div class="card-vs">
+            <div style="font-size: 1rem; color: var(--text-dim);">vs</div>
+            <div>BO7</div>
+          </div>
+          <div class="card-team right">
+            <div class="team-logo">NRG</div>
+            <div class="card-team-name">NRG</div>
+          </div>
+        </div>
+        <div class="card-odds-row">
+          <div class="card-odd" onclick="addToBetSlip('G2 Esports', 'RLCS Worlds', '1.70')">
+            <span class="odd-label">G2</span>
+            <span class="odd-value">1.70</span>
+          </div>
+          <div class="card-odd" onclick="addToBetSlip('Over 5.5 Games', 'RLCS Worlds', '1.88')">
+            <span class="odd-label">Ov 5.5 Gms</span>
+            <span class="odd-value">1.88</span>
+          </div>
+          <div class="card-odd" onclick="addToBetSlip('NRG Win', 'RLCS Worlds', '2.25')">
+            <span class="odd-label">NRG</span>
+            <span class="odd-value">2.25</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ── TOURNAMENTS ── -->
+<div id="tournaments">
+<div class="section-divider"></div>
+<div class="section fade-in">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Active <span>Tournaments</span></div>
+      <div class="section-sub">Major events with open markets</div>
+    </div>
+    <a href="#" class="view-all">All Tournaments</a>
+  </div>
+  <div class="tournaments-list">
+    <div class="tournament-row" onclick="showToast('Opening BLAST Premier markets...')">
+      <div class="tournament-rank">#1</div>
+      <span class="game-tag tag-csgo">CS2</span>
+      <div class="tournament-info">
+        <div class="tournament-row-name">BLAST Premier World Final 2026</div>
+        <div class="tournament-row-meta">Lisbon, Portugal — May 12–18, 2026</div>
+      </div>
+      <div class="tournament-prize">$1,000,000</div>
+      <div class="tournament-matches">48 markets<br>open</div>
+    </div>
+    <div class="tournament-row" onclick="showToast('Opening Worlds 2026 markets...')">
+      <div class="tournament-rank">#2</div>
+      <span class="game-tag tag-lol">LOL</span>
+      <div class="tournament-info">
+        <div class="tournament-row-name">League of Legends Worlds 2026</div>
+        <div class="tournament-row-meta">Seoul, South Korea — Ongoing</div>
+      </div>
+      <div class="tournament-prize">$2,500,000</div>
+      <div class="tournament-matches">120 markets<br>open</div>
+    </div>
+    <div class="tournament-row" onclick="showToast('Opening TI2026 markets...')">
+      <div class="tournament-rank">#3</div>
+      <span class="game-tag tag-dota">DOTA 2</span>
+      <div class="tournament-info">
+        <div class="tournament-row-name">The International 2026</div>
+        <div class="tournament-row-meta">Copenhagen, Denmark — May 20–28</div>
+      </div>
+      <div class="tournament-prize" style="color: var(--accent-orange);">$18,700,000</div>
+      <div class="tournament-matches">88 markets<br>open</div>
+    </div>
+    <div class="tournament-row" onclick="showToast('Opening VCT Champions markets...')">
+      <div class="tournament-rank">#4</div>
+      <span class="game-tag tag-val">VALORANT</span>
+      <div class="tournament-info">
+        <div class="tournament-row-name">VCT Champions 2026</div>
+        <div class="tournament-row-meta">Los Angeles, USA — May 15–June 1</div>
+      </div>
+      <div class="tournament-prize">$1,000,000</div>
+      <div class="tournament-matches">64 markets<br>open</div>
+    </div>
+    <div class="tournament-row" onclick="showToast('Opening RLCS Worlds markets...')">
+      <div class="tournament-rank">#5</div>
+      <span class="game-tag" style="background: rgba(255,107,26,0.1); color: #ff9a5a; border: 1px solid rgba(255,107,26,0.2); font-family: 'JetBrains Mono'; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px;">RL</span>
+      <div class="tournament-info">
+        <div class="tournament-row-name">RLCS 2026 World Championship</div>
+        <div class="tournament-row-meta">Fort Worth, USA — June 3–8</div>
+      </div>
+      <div class="tournament-prize">$1,000,000</div>
+      <div class="tournament-matches">32 markets<br>open</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── PROMOTIONS ── -->
+<div id="promos">
+<div class="section-divider"></div>
+<div class="section fade-in">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Active <span>Promotions</span></div>
+      <div class="section-sub">Boost your bankroll</div>
+    </div>
+    <a href="#" class="view-all">All Promos</a>
+  </div>
+  <div class="promos-grid">
+    <div class="promo-card" onclick="showToast('Claiming welcome bonus...')">
+      <div class="promo-img promo-img-1">
+        <div class="promo-img-text">500</div>
+        <div class="promo-img-badge">NEW USERS</div>
+      </div>
+      <div class="promo-content">
+        <div class="promo-name">Welcome Bonus</div>
+        <div class="promo-desc">Get a 100% deposit match on your first deposit. New players only, T&Cs apply.</div>
+        <div class="promo-value">+$500</div>
+        <button class="btn-primary" style="width:100%;">Claim Bonus</button>
+      </div>
+    </div>
+    <div class="promo-card" onclick="showToast('Activating Worlds Boost...')">
+      <div class="promo-img promo-img-2">
+        <div class="promo-img-text">3X</div>
+        <div class="promo-img-badge" style="background: var(--accent-orange); color: var(--bg-void);">WORLDS</div>
+      </div>
+      <div class="promo-content">
+        <div class="promo-name">Worlds Odds Boost</div>
+        <div class="promo-desc">Get 3x enhanced odds on selected LoL Worlds matches. Limited to one use per day.</div>
+        <div class="promo-value" style="color: var(--accent-orange);">3X ODDS</div>
+        <button class="btn-primary" style="width:100%; background: var(--accent-orange);">Activate Boost</button>
+      </div>
+    </div>
+    <div class="promo-card" onclick="showToast('Activating Free Bet...')">
+      <div class="promo-img promo-img-3">
+        <div class="promo-img-text">FREE</div>
+        <div class="promo-img-badge" style="background: var(--accent-purple); color: white;">LOYALTY</div>
+      </div>
+      <div class="promo-content">
+        <div class="promo-name">Weekly Free Bet</div>
+        <div class="promo-desc">Bet $50+ during the week and receive a $10 free bet every Monday morning.</div>
+        <div class="promo-value" style="color: var(--accent-purple);">$10 FREE</div>
+        <button class="btn-primary" style="width:100%; background: var(--accent-purple);">Claim Free Bet</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── FOOTER ── -->
+<div class="section-divider"></div>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">NEXUS<span style="color:var(--accent-cyan);">BET</span></a>
+      <p>The premier destination for competitive esports betting. Real-time odds, in-play markets, and instant payouts across all major titles and tournaments worldwide.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Esports</h4>
+      <ul>
+        <li><a href="#">CS2</a></li>
+        <li><a href="#">League of Legends</a></li>
+        <li><a href="#">Dota 2</a></li>
+        <li><a href="#">Valorant</a></li>
+        <li><a href="#">Overwatch 2</a></li>
+        <li><a href="#">Rocket League</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Betting</h4>
+      <ul>
+        <li><a href="#">Live Betting</a></li>
+        <li><a href="#">Match Winner</a></li>
+        <li><a href="#">Map Handicap</a></li>
+        <li><a href="#">Totals</a></li>
+        <li><a href="#">Outright Winner</a></li>
+        <li><a href="#">Player Props</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Responsible Gambling</a></li>
+        <li><a href="#">Betting Rules</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-legal">
+      © 2026 NexusBet. All rights reserved. Gambling involves risk. Please gamble responsibly. NexusBet is licensed under MGA/B2C/2026. For support, visit begambleaware.org. Must be 18+ to use this service.
+    </div>
+    <div class="age-badge">18+</div>
+  </div>
+</footer>
+
+<!-- ── BET SLIP TOGGLE ── -->
+<button class="betslip-toggle" onclick="toggleBetSlip()" id="betslipToggle">
+  <span class="betslip-toggle-icon">🎯</span>
+  <span id="toggleLabel">SLIP</span>
+  <span class="betslip-badge" id="betBadge" style="display:none">0</span>
+</button>
+
+<!-- ── BET SLIP ── -->
+<div class="betslip-wrapper" id="betslipWrapper">
+  <div class="betslip">
+    <div class="betslip-header">
+      <span class="betslip-title">BET SLIP</span>
+      <div style="display:flex; align-items:center; gap:0.7rem;">
+        <div class="betslip-count" id="slipCount">0</div>
+        <button class="betslip-close" onclick="toggleBetSlip()">✕</button>
+      </div>
+    </div>
+    <div class="betslip-items" id="betslipItems">
+      <div id="emptySlip" style="padding: 2rem 0; text-align: center; color: var(--text-dim); font-family: 'JetBrains Mono'; font-size: 0.7rem; letter-spacing: 0.08em; line-height: 2;">
+        NO SELECTIONS<br>Click any odds to add<br>bets to your slip
+      </div>
+    </div>
+    <div class="betslip-footer" id="betslipFooter" style="display:none;">
+      <input type="number" class="betslip-stake" id="stakeInput" placeholder="Enter stake ($)" min="1" oninput="calcPotential()">
+      <div class="betslip-potential">
+        <span class="betslip-potential-label">POTENTIAL RETURN</span>
+        <span class="betslip-potential-value" id="potentialReturn">$0.00</span>
+      </div>
+      <button class="btn-place-bet" onclick="placeBet()">Place Bet</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── BET SLIP STATE ──
+  let bets = [];
+  let slipOpen = false;
+
+  function toggleBetSlip() {
+    slipOpen = !slipOpen;
+    document.getElementById('betslipWrapper').classList.toggle('open', slipOpen);
+    document.getElementById('toggleLabel').textContent = slipOpen ? 'CLOSE' : 'SLIP';
+  }
+
+  function addToBetSlip(pick, game, odd) {
+    const existing = bets.find(b => b.game === game && b.pick === pick);
+    if (existing) {
+      showToast(`<span class="toast-accent">${pick}</span> already in slip`);
+      if (!slipOpen) toggleBetSlip();
+      return;
+    }
+
+    bets.push({ pick, game, odd: parseFloat(odd), id: Date.now() });
+    renderSlip();
+    showToast(`Added <span class="toast-accent">${pick}</span> @ ${odd} to bet slip`);
+
+    if (!slipOpen) toggleBetSlip();
+  }
+
+  function removeBet(id) {
+    bets = bets.filter(b => b.id !== id);
+    renderSlip();
+    calcPotential();
+  }
+
+  function renderSlip() {
+    const container = document.getElementById('betslipItems');
+    const footer = document.getElementById('betslipFooter');
+    const count = document.getElementById('slipCount');
+    const badge = document.getElementById('betBadge');
+    const empty = document.getElementById('emptySlip');
+
+    count.textContent = bets.length;
+    badge.textContent = bets.length;
+    badge.style.display = bets.length > 0 ? 'flex' : 'none';
+
+    // Remove old bet items
+    container.querySelectorAll('.betslip-item').forEach(el => el.remove());
+
+    if (bets.length === 0) {
+      empty.style.display = 'block';
+      footer.style.display = 'none';
+      return;
+    }
+
+    empty.style.display = 'none';
+    footer.style.display = 'block';
+
+    bets.forEach(bet => {
+      const item = document.createElement('div');
+      item.className = 'betslip-item';
+      item.innerHTML = `
+        <div class="betslip-item-game">${bet.game.toUpperCase()}</div>
+        <div class="betslip-item-pick">${bet.pick}</div>
+        <div class="betslip-item-odd">@ ${bet.odd.toFixed(2)}</div>
+        <button class="betslip-remove" onclick="removeBet(${bet.id})">✕</button>
+      `;
+      container.appendChild(item);
+    });
+
+    calcPotential();
+  }
+
+  function calcPotential() {
+    const stake = parseFloat(document.getElementById('stakeInput').value) || 0;
+    const totalOdds = bets.reduce((acc, b) => acc * b.odd, 1);
+    const potential = stake * totalOdds;
+    document.getElementById('potentialReturn').textContent = `$${potential.toFixed(2)}`;
+  }
+
+  function placeBet() {
+    const stake = parseFloat(document.getElementById('stakeInput').value) || 0;
+    if (stake <= 0) { showToast('Please enter a valid stake amount'); return; }
+    if (bets.length === 0) { showToast('No bets in slip'); return; }
+    const totalOdds = bets.reduce((acc, b) => acc * b.odd, 1);
+    const potential = (stake * totalOdds).toFixed(2);
+    showToast(`🎯 Bet placed! Potential return: <span class="toast-accent">$${potential}</span>`);
+    bets = [];
+    document.getElementById('stakeInput').value = '';
+    renderSlip();
+    setTimeout(() => { if (slipOpen) toggleBetSlip(); }, 800);
+  }
+
+  // ── TOAST ──
+  function showToast(message) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = message;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 2900);
+  }
+
+  // ── FILTER BUTTONS ──
+  function setFilter(btn, filter) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    showToast(`Filtering by <span class="toast-accent">${filter === 'all' ? 'All Games' : filter.toUpperCase()}</span>`);
+  }
+
+  // ── SCROLL FADE-IN ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // ── SMOOTH SCROLL FOR NAV ──
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const href = a.getAttribute('href');
+      if (href.length > 1) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // ── LIVE ODDS FLUCTUATION ──
+  function fluctuateOdds() {
+    document.querySelectorAll('.odd-value').forEach(el => {
+      const current = parseFloat(el.textContent);
+      if (!isNaN(current)) {
+        const delta = (Math.random() - 0.5) * 0.04;
+        const newVal = Math.max(1.01, current + delta);
+        const newStr = newVal.toFixed(2);
+        if (newStr !== el.textContent) {
+          el.textContent = newStr;
+          el.style.color = delta > 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+          setTimeout(() => el.style.color = 'var(--accent-cyan)', 800);
+        }
+      }
+    });
+  }
+
+  setInterval(fluctuateOdds, 4000);
+</script>
+</body>
+</html>
